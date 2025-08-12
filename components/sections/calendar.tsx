@@ -1,35 +1,26 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ChevronLeft, ChevronRight, CalendarIcon, Check, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, CalendarIcon, Check, X, RefreshCw } from "lucide-react"
 
-// Dados mock de disponibilidade (em produção, viria de uma API)
-const mockAvailability: Record<string, string> = {
-  "2024-01-15": "available",
-  "2024-01-16": "available",
-  "2024-01-17": "booked",
-  "2024-01-18": "booked",
-  "2024-01-19": "available",
-  "2024-01-20": "available",
-  "2024-01-21": "available",
-  "2024-01-22": "available",
-  "2024-01-23": "booked",
-  "2024-01-24": "booked",
-  "2024-01-25": "available",
-  "2024-01-26": "available",
-  "2024-01-27": "available",
-  "2024-01-28": "available",
-  "2024-01-29": "available",
-  "2024-01-30": "booked",
+interface AvailabilityResponse {
+  success: boolean
+  availability: Record<string, string>
+  lastUpdated: string
+  eventsCount: number
+  error?: string
 }
-
 
 export function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDates, setSelectedDates] = useState<string[]>([])
+  const [availability, setAvailability] = useState<Record<string, string>>({})
+  const [loading, setLoading] = useState(true)
+  const [lastUpdated, setLastUpdated] = useState<string>("")
+  const [error, setError] = useState<string>("")
 
   const monthNames = [
     "Janeiro",
@@ -47,6 +38,32 @@ export function Calendar() {
   ]
 
   const weekDays = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
+
+  const fetchAvailability = async () => {
+    try {
+      setLoading(true)
+      setError("")
+
+      const response = await fetch("/api/availability")
+      const data: AvailabilityResponse = await response.json()
+
+      if (data.success) {
+        setAvailability(data.availability)
+        setLastUpdated(data.lastUpdated)
+      } else {
+        setError(data.error || "Erro ao carregar disponibilidade")
+      }
+    } catch (err) {
+      setError("Erro de conexão")
+      console.error("Erro ao buscar disponibilidade:", err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchAvailability()
+  }, [])
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear()
@@ -76,7 +93,7 @@ export function Calendar() {
   }
 
   const getDateStatus = (dateStr: string) => {
-    return mockAvailability[dateStr] || "available"
+    return availability[dateStr] || "available"
   }
 
   const isDateSelected = (dateStr: string) => {
@@ -129,6 +146,42 @@ export function Calendar() {
           <p className="text-lg text-moss-700 max-w-2xl mx-auto">
             Selecione as datas desejadas e faça sua reserva diretamente pelo WhatsApp
           </p>
+          <div className="flex items-center justify-center gap-4 mt-4">
+            {loading && (
+              <div className="flex items-center gap-2 text-moss-600">
+                <RefreshCw className="h-4 w-4 animate-spin" />
+                <span className="text-sm">Carregando disponibilidade...</span>
+              </div>
+            )}
+            {error && (
+              <div className="flex items-center gap-2 text-red-600">
+                <X className="h-4 w-4" />
+                <span className="text-sm">{error}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={fetchAvailability}
+                  className="text-red-600 hover:text-red-700"
+                >
+                  Tentar novamente
+                </Button>
+              </div>
+            )}
+            {lastUpdated && !loading && !error && (
+              <div className="flex items-center gap-2 text-moss-600">
+                <Check className="h-4 w-4" />
+                <span className="text-sm">Atualizado: {new Date(lastUpdated).toLocaleString("pt-BR")}</span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={fetchAvailability}
+                  className="text-moss-600 hover:text-moss-700"
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="max-w-4xl mx-auto">
@@ -186,12 +239,13 @@ export function Calendar() {
                       <button
                         key={dateStr}
                         onClick={() => handleDateClick(day)}
-                        disabled={status === "booked"}
+                        disabled={status === "booked" || loading}
                         className={`
                           p-2 text-sm rounded-lg transition-all duration-200 relative
                           ${status === "available" && !isSelected ? "bg-white hover:bg-moss-100 text-moss-800 border border-moss-200" : ""}
                           ${status === "available" && isSelected ? "bg-moss-600 text-white" : ""}
                           ${status === "booked" ? "bg-red-100 text-red-400 cursor-not-allowed" : ""}
+                          ${loading ? "opacity-50 cursor-not-allowed" : ""}
                           ${isToday ? "ring-2 ring-moss-400" : ""}
                         `}
                       >
@@ -230,7 +284,7 @@ export function Calendar() {
                     <div className="w-6 h-6 bg-red-100 rounded relative">
                       <X className="h-3 w-3 absolute top-0 right-0 text-red-400" />
                     </div>
-                    <span className="text-moss-700">Ocupado</span>
+                    <span className="text-moss-700">Ocupado (Airbnb)</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-6 h-6 bg-white border-2 border-moss-400 rounded"></div>
@@ -295,6 +349,24 @@ export function Calendar() {
                     >
                       Consultar Outras Datas
                     </a>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="w-full border-moss-300 text-moss-700 hover:bg-moss-50 bg-transparent"
+                    onClick={fetchAvailability}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                        Atualizando...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="h-4 w-4 mr-2" />
+                        Atualizar Disponibilidade
+                      </>
+                    )}
                   </Button>
                 </CardContent>
               </Card>
