@@ -123,10 +123,10 @@ const galleryImages = [
   },
   {
     id: 8,
-    category: "gastronomia",
-    title: "Jantar Romântico",
-    description: "Mesa preparada na floresta para momentos especiais",
-    image: "/chalet-dining.webp",
+    category: "rio",
+    title: "Cabena em frente do Rio",
+    description: "Uma vista linda para a natureza com tranquilidade e leveza",
+    image: "/cabana.jpeg",
   },
   {
     id: 18,
@@ -173,7 +173,7 @@ const galleryImages = [
     image: "/rede-vista-lago.jpeg",
   },
   {
-    id: 20,
+    id: 24,
     category: "natureza",
     title: "Chale com área",
     description: "Vista externa do chalé suspenso na natureza",

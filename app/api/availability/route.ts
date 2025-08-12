@@ -1,14 +1,12 @@
 import { NextResponse } from "next/server"
 
-// Interface para eventos do iCal
 interface CalendarEvent {
   start: Date
   end: Date
   summary: string
-  source: string // Added source to track which platform the booking came from
+  source: string
 }
 
-// Função para parsear dados iCal básicos
 function parseICalData(icalData: string, source: string): CalendarEvent[] {
   const events: CalendarEvent[] = []
   const lines = icalData.split("\n")
@@ -21,7 +19,7 @@ function parseICalData(icalData: string, source: string): CalendarEvent[] {
 
     if (trimmedLine === "BEGIN:VEVENT") {
       inEvent = true
-      currentEvent = { source } // Set source for each event
+      currentEvent = { source }
     } else if (trimmedLine === "END:VEVENT" && inEvent) {
       if (currentEvent.start && currentEvent.end) {
         events.push(currentEvent as CalendarEvent)
@@ -43,25 +41,20 @@ function parseICalData(icalData: string, source: string): CalendarEvent[] {
   return events
 }
 
-// Função para parsear datas do formato iCal
 function parseICalDate(dateStr: string): Date {
-  // Remove timezone info se presente
   const cleanDateStr = dateStr.replace(/[TZ]/g, "").substring(0, 8)
 
-  // Formato: YYYYMMDD
   const year = Number.parseInt(cleanDateStr.substring(0, 4))
-  const month = Number.parseInt(cleanDateStr.substring(4, 6)) - 1 // Mês é 0-indexado
+  const month = Number.parseInt(cleanDateStr.substring(4, 6)) - 1
   const day = Number.parseInt(cleanDateStr.substring(6, 8))
 
   return new Date(year, month, day)
 }
 
-// Função para gerar todas as datas entre duas datas
 function getDatesBetween(startDate: Date, endDate: Date): string[] {
   const dates: string[] = []
   const currentDate = new Date(startDate)
 
-  // Ajustar para não incluir o último dia (checkout)
   const adjustedEndDate = new Date(endDate)
   adjustedEndDate.setDate(adjustedEndDate.getDate() - 1)
 
@@ -82,7 +75,7 @@ async function fetchICalData(url: string, source: string): Promise<CalendarEvent
       headers: {
         "User-Agent": "Mozilla/5.0 (compatible; Calendar-Sync/1.0)",
       },
-      next: { revalidate: 3600 }, // Cache por 1 hora
+      next: { revalidate: 3600 },
     })
 
     if (!response.ok) {
@@ -111,7 +104,6 @@ export async function GET() {
 
     const allEvents = [...airbnbEvents, ...bookingEvents]
 
-    // Converter eventos em datas ocupadas
     const bookedDates: Record<string, string> = {}
 
     allEvents.forEach((event) => {

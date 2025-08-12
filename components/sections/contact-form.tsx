@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Calendar, Users, MessageSquare, Send, Phone } from "lucide-react"
+import { MessageSquare, Send, Phone, AlertCircle } from "lucide-react"
 
 export function ContactForm() {
   const [formData, setFormData] = useState({
@@ -23,12 +23,81 @@ export function ContactForm() {
     message: "",
   })
 
+  const [errors, setErrors] = useState({
+    email: "",
+    checkIn: "",
+    checkOut: "",
+  })
+
+  const validateEmail = (email: string) => {
+    if (!email) return "" // Email não é obrigatório
+
+    if (!email.includes("@")) {
+      return "Email deve conter @"
+    }
+
+    if (!email.includes(".com")) {
+      return "Email deve conter .com"
+    }
+
+    return ""
+  }
+
+  const validateDate = (date: string, fieldName: string) => {
+    if (!date) return ""
+
+    const selectedDate = new Date(date)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0) // Remove horas para comparar apenas a data
+
+    if (selectedDate < today) {
+      return `${fieldName} não pode ser anterior à data atual`
+    }
+
+    return ""
+  }
+
+  const getMinDate = () => {
+    const today = new Date()
+    return today.toISOString().split("T")[0]
+  }
+
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
+
+    if (field === "email") {
+      const emailError = validateEmail(value)
+      setErrors((prev) => ({ ...prev, email: emailError }))
+    }
+
+    if (field === "checkIn") {
+      const checkInError = validateDate(value, "Check-in")
+      setErrors((prev) => ({ ...prev, checkIn: checkInError }))
+    }
+
+    if (field === "checkOut") {
+      const checkOutError = validateDate(value, "Check-out")
+      setErrors((prev) => ({ ...prev, checkOut: checkOutError }))
+    }
   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    const emailError = validateEmail(formData.email)
+    const checkInError = validateDate(formData.checkIn, "Check-in")
+    const checkOutError = validateDate(formData.checkOut, "Check-out")
+
+    setErrors({
+      email: emailError,
+      checkIn: checkInError,
+      checkOut: checkOutError,
+    })
+
+    // Se houver erros, não enviar o formulário
+    if (emailError || checkInError || checkOutError) {
+      return
+    }
 
     const message = `
 🏠 *Nova Solicitação de Reserva - Anauê Jungle Chalés*
@@ -132,8 +201,16 @@ Enviado através do site oficial
                       value={formData.email}
                       onChange={(e) => handleInputChange("email", e.target.value)}
                       placeholder="seu@email.com"
-                      className="bg-white/80 border-moss-200 focus:border-moss-400"
+                      className={`bg-white/80 border-moss-200 focus:border-moss-400 ${
+                        errors.email ? "border-red-500 focus:border-red-500" : ""
+                      }`}
                     />
+                    {errors.email && (
+                      <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
+                        <AlertCircle className="h-4 w-4" />
+                        <span>{errors.email}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Reservation Details */}
@@ -147,8 +224,17 @@ Enviado através do site oficial
                         type="date"
                         value={formData.checkIn}
                         onChange={(e) => handleInputChange("checkIn", e.target.value)}
-                        className="bg-white/80 border-moss-200 focus:border-moss-400"
+                        min={getMinDate()} // Definindo data mínima como hoje
+                        className={`bg-white/80 border-moss-200 focus:border-moss-400 ${
+                          errors.checkIn ? "border-red-500 focus:border-red-500" : ""
+                        }`}
                       />
+                      {errors.checkIn && (
+                        <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
+                          <AlertCircle className="h-4 w-4" />
+                          <span>{errors.checkIn}</span>
+                        </div>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="checkOut" className="text-moss-800">
@@ -159,8 +245,17 @@ Enviado através do site oficial
                         type="date"
                         value={formData.checkOut}
                         onChange={(e) => handleInputChange("checkOut", e.target.value)}
-                        className="bg-white/80 border-moss-200 focus:border-moss-400"
+                        min={getMinDate()} // Definindo data mínima como hoje
+                        className={`bg-white/80 border-moss-200 focus:border-moss-400 ${
+                          errors.checkOut ? "border-red-500 focus:border-red-500" : ""
+                        }`}
                       />
+                      {errors.checkOut && (
+                        <div className="flex items-center gap-1 mt-1 text-red-600 text-sm">
+                          <AlertCircle className="h-4 w-4" />
+                          <span>{errors.checkOut}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -172,12 +267,12 @@ Enviado através do site oficial
                       <SelectTrigger className="bg-muted border-moss-200 focus:border-moss-400">
                         <SelectValue placeholder="Selecione o número de hóspedes" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1">1 pessoa</SelectItem>
-                        <SelectItem value="2">2 pessoas</SelectItem>
-                        <SelectItem value="3">3 pessoas</SelectItem>
-                        <SelectItem value="4">4 pessoas</SelectItem>
-                        <SelectItem value="5">5 pessoas</SelectItem>
+                      <SelectContent className="bg-white">
+                        <SelectItem className="border-b" value="1">1 pessoa</SelectItem>
+                        <SelectItem className="border-b" value="2">2 pessoas</SelectItem>
+                        <SelectItem className="border-b" value="3">3 pessoas</SelectItem>
+                        <SelectItem className="border-b" value="4">4 pessoas</SelectItem>
+                        <SelectItem className="border-b" value="5">5 pessoas</SelectItem>
                         <SelectItem value="6+">6+ pessoas</SelectItem>
                       </SelectContent>
                     </Select>
