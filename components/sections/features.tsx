@@ -66,7 +66,7 @@ export function Features() {
         {/* Header */}
         <div className="text-center mb-16">
           <Badge className="mb-4 bg-moss-100 text-moss-800 hover:bg-moss-200">🛏️ Diária para Casal</Badge>
-          <h2 className="text-3xl md:text-4xl font-bold text-moss-900 mb-4">Tudo Incluído no Seu Pernoite</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-moss-900 mb-4">Incluído no Seu Pernoite</h2>
           <p className="text-lg text-moss-700 max-w-2xl mx-auto">
             Desfrute de uma experiência completa com todas as comodidades e serviços inclusos
           </p>

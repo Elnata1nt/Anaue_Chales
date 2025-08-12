@@ -245,25 +245,6 @@ Enviado através do site oficial
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Pricing Quick Reference */}
-              <Card className="bg-white border-moss-200">
-                <CardHeader>
-                  <CardTitle className="text-moss-900">Valores</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center p-3 bg-moss-50 rounded-lg">
-                      <span className="text-moss-800">Finais de Semana</span>
-                      <span className="font-bold text-moss-900">R$ 750</span>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-beige-50 rounded-lg">
-                      <span className="text-moss-800">Segunda a Quinta</span>
-                      <span className="font-bold text-moss-900">R$ 615</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </div>

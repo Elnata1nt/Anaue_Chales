@@ -189,8 +189,7 @@ export function Hero() {
 
               {/* Subtitle */}
               <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-3xl leading-relaxed">
-                Escape para a natureza em nossos chalés exclusivos à beira do rio, com toda estrutura e conforto que
-                você merece.
+              O seu refúgio na floresta com conforto, segurança, charme e exclusividade
               </p>
 
               {/* Key Features */}
@@ -267,15 +266,15 @@ export function Hero() {
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-moss-700">Finais de semana:</span>
                         <div className="text-right">
-                          <span className="text-moss-500 line-through text-sm">R$ 750</span>
-                          <span className="text-moss-900 font-bold ml-2">R$ 600</span>
+                          <span className="text-moss-500 line-through text-sm">R$ 940</span>
+                          <span className="text-moss-900 font-bold ml-2">R$ 752</span>
                         </div>
                       </div>
                       <div className="flex justify-between items-center">
                         <span className="text-moss-700">Segunda a quinta:</span>
                         <div className="text-right">
-                          <span className="text-moss-500 line-through text-sm">R$ 615</span>
-                          <span className="text-moss-900 font-bold ml-2">R$ 492</span>
+                          <span className="text-moss-500 line-through text-sm">R$ 750</span>
+                          <span className="text-moss-900 font-bold ml-2">R$ 600</span>
                         </div>
                       </div>
                     </div>

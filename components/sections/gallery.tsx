@@ -84,6 +84,34 @@ const galleryImages = [
     description: "Mesa e cadeiras para refeições ao ar livre",
     image: "/chalet-deck-3.webp",
   },
+  {
+    id: 14,
+    category: "chales",
+    title: "Área de Descanso na Natureza",
+    description: "Cama ao ar livre cercada pela vegetação tropical exuberante",
+    image: "/area-descanso-natureza.jpeg",
+  },
+  {
+    id: 15,
+    category: "chales",
+    title: "Banheiro Moderno",
+    description: "Banheiro elegante com box de vidro e acabamentos em madeira",
+    image: "/banheiro-moderno.jpeg",
+  },
+  {
+    id: 16,
+    category: "chales",
+    title: "Suíte Rústica",
+    description: "Quarto aconchegante com teto de madeira e cozinha integrada",
+    image: "/quarto-teto-madeira.jpeg",
+  },
+  {
+    id: 17,
+    category: "chales",
+    title: "Decoração Romântica",
+    description: "Ambiente especial preparado para momentos inesquecíveis",
+    image: "/decoracao-romantica.jpeg",
+  },
 
   // Gastronomia
   {
@@ -99,6 +127,20 @@ const galleryImages = [
     title: "Jantar Romântico",
     description: "Mesa preparada na floresta para momentos especiais",
     image: "/chalet-dining.webp",
+  },
+  {
+    id: 18,
+    category: "gastronomia",
+    title: "Gazebo à Beira d'Água",
+    description: "Espaço gourmet com vista privilegiada do lago e cortinas elegantes",
+    image: "/gazebo-beira-agua.jpeg",
+  },
+  {
+    id: 19,
+    category: "gastronomia",
+    title: "Café da Manhã no Deck",
+    description: "Mesa preparada no deck de madeira cercado pela mata",
+    image: "/mesa-cafe-deck.jpeg",
   },
 
   // Natureza
@@ -123,6 +165,13 @@ const galleryImages = [
     description: "Convivência harmoniosa com a natureza",
     image: "/chalet-deck-2.webp",
   },
+  {
+    id: 20,
+    category: "natureza",
+    title: "Rede com Vista do Lago",
+    description: "Relaxamento total em rede suspensa com vista panorâmica",
+    image: "/rede-vista-lago.jpeg",
+  },
 
   // Rio
   {
@@ -138,6 +187,13 @@ const galleryImages = [
     title: "Churrasqueira Beira Rio",
     description: "Área gourmet com vista privilegiada do rio",
     image: "/chalet-bbq.webp",
+  },
+  {
+    id: 21,
+    category: "rio",
+    title: "Vista do Lago com Boia",
+    description: "Paisagem deslumbrante do lago com boia de unicórnio e vegetação exuberante",
+    image: "/lago-vista-boia.jpeg",
   },
 ]
 

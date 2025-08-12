@@ -5,10 +5,11 @@ interface CalendarEvent {
   start: Date
   end: Date
   summary: string
+  source: string // Added source to track which platform the booking came from
 }
 
 // Função para parsear dados iCal básicos
-function parseICalData(icalData: string): CalendarEvent[] {
+function parseICalData(icalData: string, source: string): CalendarEvent[] {
   const events: CalendarEvent[] = []
   const lines = icalData.split("\n")
 
@@ -20,7 +21,7 @@ function parseICalData(icalData: string): CalendarEvent[] {
 
     if (trimmedLine === "BEGIN:VEVENT") {
       inEvent = true
-      currentEvent = {}
+      currentEvent = { source } // Set source for each event
     } else if (trimmedLine === "END:VEVENT" && inEvent) {
       if (currentEvent.start && currentEvent.end) {
         events.push(currentEvent as CalendarEvent)
@@ -75,12 +76,9 @@ function getDatesBetween(startDate: Date, endDate: Date): string[] {
   return dates
 }
 
-export async function GET() {
+async function fetchICalData(url: string, source: string): Promise<CalendarEvent[]> {
   try {
-    const icalUrl = "https://www.airbnb.com.br/calendar/ical/1457198661856129067.ics?s=64254c8251f4f54cf8b4c3ae58363ea5"
-
-    // Buscar dados do iCal
-    const response = await fetch(icalUrl, {
+    const response = await fetch(url, {
       headers: {
         "User-Agent": "Mozilla/5.0 (compatible; Calendar-Sync/1.0)",
       },
@@ -88,18 +86,35 @@ export async function GET() {
     })
 
     if (!response.ok) {
-      throw new Error(`Erro ao buscar iCal: ${response.status}`)
+      console.warn(`Erro ao buscar iCal de ${source}: ${response.status}`)
+      return []
     }
 
     const icalData = await response.text()
+    return parseICalData(icalData, source)
+  } catch (error) {
+    console.error(`Erro ao processar iCal de ${source}:`, error)
+    return []
+  }
+}
 
-    // Parsear eventos
-    const events = parseICalData(icalData)
+export async function GET() {
+  try {
+    const airbnbUrl =
+      "https://www.airbnb.com.br/calendar/ical/1457198661856129067.ics?s=64254c8251f4f54cf8b4c3ae58363ea5"
+    const bookingUrl = "https://ical.booking.com/v1/export?t=21d8cded-a6cf-4897-8f9a-dfccf043b796"
+
+    const [airbnbEvents, bookingEvents] = await Promise.all([
+      fetchICalData(airbnbUrl, "Airbnb"),
+      fetchICalData(bookingUrl, "Booking.com"),
+    ])
+
+    const allEvents = [...airbnbEvents, ...bookingEvents]
 
     // Converter eventos em datas ocupadas
     const bookedDates: Record<string, string> = {}
 
-    events.forEach((event) => {
+    allEvents.forEach((event) => {
       const dates = getDatesBetween(event.start, event.end)
       dates.forEach((date) => {
         bookedDates[date] = "booked"
@@ -110,7 +125,11 @@ export async function GET() {
       success: true,
       availability: bookedDates,
       lastUpdated: new Date().toISOString(),
-      eventsCount: events.length,
+      eventsCount: allEvents.length,
+      sources: {
+        airbnb: airbnbEvents.length,
+        booking: bookingEvents.length,
+      },
     })
   } catch (error) {
     console.error("Erro ao processar iCal:", error)

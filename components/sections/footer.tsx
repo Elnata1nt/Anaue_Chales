@@ -176,7 +176,7 @@ export function Footer() {
             {/* Pricing Summary */}
             <Card className="mt-6 bg-moss-800/50 border-moss-600">
               <CardContent className="p-4">
-                <h5 className="font-medium text-white mb-3">Valores</h5>
+                <h5 className="font-medium text-white mb-3">Valores no Airbnb</h5>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between text-moss-200">
                     <span>Finais de semana:</span>

@@ -284,7 +284,7 @@ export function Calendar() {
                     <div className="w-6 h-6 bg-red-100 rounded relative">
                       <X className="h-3 w-3 absolute top-0 right-0 text-red-400" />
                     </div>
-                    <span className="text-moss-700">Ocupado (Airbnb)</span>
+                    <span className="text-moss-700">Ocupado</span>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="w-6 h-6 bg-white border-2 border-moss-400 rounded"></div>
