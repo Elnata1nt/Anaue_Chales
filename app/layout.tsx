@@ -7,10 +7,12 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "Anauê Jungle Chalés - Pousada no Tarumã, Manaus",
+  icons: {
+    icon: '/favicon.ico',
+  },
   description:
     "Escape para a natureza em nossos chalés exclusivos à beira do rio no Tarumã. Estrutura completa, café da manhã incluso e localização privilegiada próximo ao Hope Bay Park.",
   keywords: "pousada, chalés, Tarumã, Manaus, Rio Negro, Hope Bay Park, Praia do Avião, hospedagem, turismo",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({

@@ -172,6 +172,13 @@ const galleryImages = [
     description: "Relaxamento total em rede suspensa com vista panorâmica",
     image: "/rede-vista-lago.jpeg",
   },
+  {
+    id: 20,
+    category: "natureza",
+    title: "Chale com área",
+    description: "Vista externa do chalé suspenso na natureza",
+    image: "/chale.jpeg",
+  },
 
   // Rio
   {
